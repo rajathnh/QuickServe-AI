@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #chatHistory {
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 400px;
+      height: 300px;
+      overflow-y: scroll;
+      margin-bottom: 10px;
+    }
+    #chatContainer {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chat Test</h1>
+  
+  <div>
+    <label for="userId">User ID:</label>
+    <input type="text" id="userId" placeholder="Enter your user ID">
+    <button id="joinBtn">Join Chat</button>
+  </div>
+  
+  <div id="chatContainer">
+    <div id="chatHistory"></div>
+    <input type="text" id="messageInput" placeholder="Type your message here" style="width: 300px;">
+    <button id="sendBtn">Send</button>
+  </div>
+  
+  <!-- Include Socket.IO client library -->
+  <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+  <script>
+    // Connect to the Socket.IO server
+    const socket = io("http://localhost:5000");
+    let userId = null;
+    
+    // Join chat when user clicks Join
+    document.getElementById("joinBtn").addEventListener("click", () => {
+      userId = document.getElementById("userId").value.trim();
+      if (!userId) {
+        alert("Please enter a user ID");
+        return;
+      }
+      socket.emit("join", userId);
+      document.getElementById("chatContainer").style.display = "block";
+    });
+    
+    // Display existing chat history (if any)
+    socket.on("chatHistory", (messages) => {
+      const chatHistoryDiv = document.getElementById("chatHistory");
+      chatHistoryDiv.innerHTML = "";
+      messages.forEach((msg) => {
+        const p = document.createElement("p");
+        p.textContent = msg.sender + ": " + msg.text;
+        chatHistoryDiv.appendChild(p);
+      });
+    });
+    
+    // Listen for new messages from the server
+    socket.on("newMessage", (msg) => {
+      const chatHistoryDiv = document.getElementById("chatHistory");
+      const p = document.createElement("p");
+      p.textContent = msg.sender + ": " + msg.text;
+      chatHistoryDiv.appendChild(p);
+      // Auto scroll to bottom
+      chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
+    });
+    
+    // Send a message when Send button is clicked
+    document.getElementById("sendBtn").addEventListener("click", () => {
+      const message = document.getElementById("messageInput").value.trim();
+      if (!message) return;
+      // Emit the sendMessage event with userId and text
+      socket.emit("sendMessage", { userId, text: message });
+      // Optionally, you can also display the user's own message locally
+      const chatHistoryDiv = document.getElementById("chatHistory");
+      const p = document.createElement("p");
+      p.textContent = "user: " + message;
+      chatHistoryDiv.appendChild(p);
+      chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
+      document.getElementById("messageInput").value = "";
+    });
+  </script>
+</body>
+</html>

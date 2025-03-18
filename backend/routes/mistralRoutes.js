@@ -28,7 +28,7 @@ router.post("/ask", async (req, res) => {
       }
     );
 
-    res.json(response.data);
+    res.json(response.data); // Send the full response back
   } catch (error) {
     console.error("Error calling Mistral:", error.message);
     res.status(500).json({ error: "Failed to fetch response from Mistral" });

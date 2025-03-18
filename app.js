@@ -2,17 +2,20 @@ require("dotenv").config();
 require("express-async-errors");
 
 const express = require("express");
+const app = express();
 const http = require("http");
 const socketio = require("socket.io");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const axios = require("axios"); // Import axios
 const port = process.env.PORT || 5000;
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'frontend')));
 
 const connectDB = require("./backend/db/connect");
 const Conversation = require("./backend/models/Conversation"); // Import Conversation Model
-const axios = require("axios");
 
-app = express();
+
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(cors());
 app.use(express.json());
@@ -36,27 +39,6 @@ const server = http.createServer(app);
 const io = socketio(server, {
   cors: { origin: "*", methods: ["GET", "POST"] },
 });
-
-// Function to call AI API (Hugging Face, etc.)
-async function callAI(message) {
-  try {
-    const response = await axios.post(
-      "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct",
-      {
-        inputs: message,
-        parameters: { max_length: 100 },
-      },
-      {
-        headers: { Authorization: `Bearer ${process.env.HF_API_KEY}` },
-      }
-    );
-
-    return response.data[0].generated_text || "I couldn't process that request.";
-  } catch (error) {
-    console.error("AI API Error:", error.message);
-    return "Sorry, I couldn't process your request.";
-  }
-}
 
 // Handle Socket.IO connections
 io.on("connection", (socket) => {
@@ -89,15 +71,29 @@ io.on("connection", (socket) => {
     conversation.messages.push({ sender: "user", text });
     await conversation.save();
 
-    // Fetch AI response
-    const botResponse = await callAI(text);
+    try {
+      // Send the user's message to the /api/v1/mistral/ask endpoint
+      const mistralResponse = await axios.post(
+        "http://localhost:5000/api/v1/mistral/ask", // Adjust the URL if needed
+        { prompt: text }
+      );
 
-    // Save AI's response
-    conversation.messages.push({ sender: "bot", text: botResponse });
-    await conversation.save();
+      const botResponse = mistralResponse.data.choices[0].message.content; // Extract the AI's reply
 
-    // Emit the bot's response
-    io.to(userId).emit("newMessage", { sender: "bot", text: botResponse });
+      // Save AI's response
+      conversation.messages.push({ sender: "bot", text: botResponse });
+      await conversation.save();
+
+      // Emit the bot's response
+      io.to(userId).emit("newMessage", { sender: "bot", text: botResponse });
+    } catch (error) {
+      console.error("Error communicating with Mistral API:", error);
+      // Handle errors appropriately (e.g., send an error message to the user)
+      io.to(userId).emit("newMessage", {
+        sender: "bot",
+        text: "Sorry, I encountered an error processing your request.",
+      });
+    }
   });
 
   socket.on("disconnect", () => {
