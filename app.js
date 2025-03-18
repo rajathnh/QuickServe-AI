@@ -22,12 +22,14 @@ const authRouter = require("./backend/routes/authRoutes");
 const restaurantRouter = require("./backend/routes/restaurantRoutes");
 const clinicRouter = require("./backend/routes/clinicRoutes");
 const userRouter = require("./backend/routes/userRoutes");
+const mistralRouter = require("./backend/routes/mistralRoutes");
 
 // Mount routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/restaurant", restaurantRouter);
 app.use("/api/v1/clinic", clinicRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/mistral", mistralRouter);
 
 // ----- Setup HTTP Server & Socket.IO -----
 const server = http.createServer(app);
