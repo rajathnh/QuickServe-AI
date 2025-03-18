@@ -28,13 +28,12 @@ const getRestaurantMenu = async (req, res) => {
 // Place a new order
 const placeOrder = async (req, res) => {
   try {
-    const { userId, restaurantId, items, deliveryDetails } = req.body;
+    const { userId, restaurantId, items } = req.body;
 
     const newOrder = new Order({
       user: userId,
       restaurant: restaurantId,
-      items,
-      deliveryDetails,
+      items,      
       status: 'Pending'
     });
 
@@ -77,13 +76,13 @@ const getOrdersForUser = async (req, res) => {
 // Update an existing order (if modifications are allowed)
 const updateOrder = async (req, res) => {
   try {
-    const { items, deliveryDetails, status } = req.body;
+    const { items, status } = req.body;
     const order = await Order.findById(req.params.orderId);
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
     if (items) order.items = items;
-    if (deliveryDetails) order.deliveryDetails = deliveryDetails;
+    
     if (status) order.status = status;
 
     await order.save();

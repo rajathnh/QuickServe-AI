@@ -10,7 +10,7 @@ const OrderSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   restaurant: { type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant', required: true },
   items: [OrderItemSchema],
-  deliveryDetails: { type: String }, // e.g., delivery address or pickup instructions
+ 
   status: { type: String, default: 'Pending' },
   created_at: { type: Date, default: Date.now }
 });
