@@ -1,23 +1,29 @@
-// routes/clinicRoutes.js
 const express = require('express');
 const router = express.Router();
 const clinicController = require('../controllers/clinicController');
 
-// Get all doctors
-router.get('/doctors', clinicController.getDoctors);
+// Retrieve all doctors
+router.get('/doctors', clinicController.getAllDoctors);
 
-router.post('/doctors', clinicController.addDoctor);
+// Retrieve doctors by specialization (e.g., /doctors/specialization/Cardiology)
+router.get('/doctors/specialization/:specialization', clinicController.getDoctorsBySpecialization);
 
-// Book a new appointment
-router.post('/book-appointment', clinicController.bookAppointment);
+// Get clinic timings by clinic id (e.g., /clinic/timings/60a...id)
+router.get('/clinic/timings/:clinicId', clinicController.getClinicTimings);
 
-// Get a specific appointment
-router.get('/appointment/:appointmentId', clinicController.getAppointment);
+// Get individual doctor timings by doctor id (e.g., /doctor/timings/60a...id)
+router.get('/doctor/timings/:doctorId', clinicController.getDoctorTimings);
 
-// Get all appointments for a user (via query parameter)
-router.get('/appointments', clinicController.getAppointmentsForUser);
+// Add a new doctor
+router.post('/doctor', clinicController.addNewDoctor);
 
-// Update an appointment
-router.put('/appointment/:appointmentId', clinicController.updateAppointment);
+// Book an appointment
+router.post('/appointment', clinicController.bookAppointment);
+
+// Retrieve appointment details by appointment id
+router.get('/appointment/:appointmentId', clinicController.getAppointmentDetails);
+
+// Retrieve specific user appointments
+router.get('/appointments/user/:userId', clinicController.getUserAppointments);
 
 module.exports = router;

@@ -1,27 +1,30 @@
-// routes/restaurantRoutes.js
 const express = require('express');
 const router = express.Router();
 const restaurantController = require('../controllers/restaurantController');
+// assuming you split addMenuItem into its own controller file
 
-// Get list of restaurants
-router.get('/restaurants', restaurantController.getRestaurants);
+// Check menu for a specific restaurant
+router.get('/menu/:restaurantId', restaurantController.checkMenu);
 
-// Get menu for a specific restaurant by its ID
-router.get('/restaurants/:id/menu', restaurantController.getRestaurantMenu);
+// Find food by specific food labelling
+router.get('/labelling/:labelling', restaurantController.findFoodByFoodLabelling);
 
-// Place a new order
+// Get details of a particular dish
+router.get('/dish/:dishId', restaurantController.getDishDetails);
+
+// Place an order
 router.post('/order', restaurantController.placeOrder);
 
-// Get order details by order ID
+// Get estimated time for an order
+router.get('/order/time/:orderId', restaurantController.getOrderEstimatedTime);
 
+// Add a review for a restaurant
+router.post('/review', restaurantController.addReview);
 
-// Get all orders for a user (using query parameter: userId)
-router.get('/orders', restaurantController.getOrdersForUser);
+// Get complete restaurant details (including reviews and menu items)
+router.get('/details/:restaurantId', restaurantController.getRestaurantDetails);
 
-// Update an existing order
-router.get('/order/:orderId', restaurantController.getOrder);
-router.put('/order/:orderId', restaurantController.updateOrder);
-
-router.post('/restaurants', restaurantController.addRestaurant);
+// Add a new menu item
+router.post('/menu', restaurantController.addMenuItem);
 
 module.exports = router;

@@ -1,68 +1,44 @@
 const User = require('../models/User');
-const bcrypt = require('bcrypt');
 
-// Get the current user's profile, including their orders and appointments
-const getProfile = async (req, res) => {
+// 1. Get User Profile (with order history and appointment details)
+const getUserProfile = async (req, res) => {
   try {
-    // Assume req.user is set by your authentication middleware
-    const user = await User.findById(req.user.id)
-      .populate('orders')
-      .populate('appointments');
+    // Assuming authentication middleware sets req.user.id
+    const userId = req.user.id;
+    const user = await User.findById(userId)
+      .populate('orderHistory')         // Populating order history
+      .populate('previousAppointments'); // Populating appointment details
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ message: 'Error fetching user profile', error: err.message });
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error('Error retrieving user profile:', error);
+    res.status(500).json({ message: 'Server error retrieving profile', error: error.message });
   }
 };
 
-// Update the current user's profile
-const updateProfile = async (req, res) => {
+// 2. Update User Profile
+const updateUserProfile = async (req, res) => {
   try {
-    // Extract fields that can be updated from the request body
-    const { username, email, preferences, password } = req.body;
-    
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    
-    // Update fields if provided
-    if (username) user.username = username;
-    if (email) user.email = email;
-    if (preferences) user.preferences = preferences;
-    if (password) {
-      // Hash the new password before saving
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
-    }
-    
-    await user.save();
-    res.json({ message: 'Profile updated successfully', user });
-  } catch (err) {
-    res.status(500).json({ message: 'Error updating profile', error: err.message });
-  }
-};
+    // Assuming authentication middleware sets req.user.id
+    const userId = req.user.id;
+    const updates = req.body;
 
-// Optional: Get a user by their ID (useful for admin purposes)
-const getUserById = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id)
-      .populate('orders')
-      .populate('appointments');
-    if (!user) {
+    // Options: { new: true } returns the updated document
+    const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true });
+    if (!updatedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.json(user);
-  } catch (err) {
-    res.status(500).json({ message: 'Error fetching user details', error: err.message });
+    res.status(200).json({ message: 'Profile updated successfully', user: updatedUser });
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).json({ message: 'Server error updating profile', error: error.message });
   }
 };
 
 module.exports = {
-    getProfile,
-  updateProfile,
-  getUserById
-
-}
+  getUserProfile,
+  updateUserProfile
+};

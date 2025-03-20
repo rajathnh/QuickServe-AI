@@ -1,129 +1,172 @@
-// controllers/clinicController.js
 const Doctor = require('../models/Doctor');
+const Clinic = require('../models/Clinic');
 const Appointment = require('../models/Appointment');
+const User = require('../models/User');
 
-/**
- * GET /api/doctors
- * Retrieve a list of all available doctors.
- */
-exports.getDoctors = async (req, res) => {
+// 1. Retrieve all doctors
+const getAllDoctors = async (req, res) => {
   try {
     const doctors = await Doctor.find();
-    res.json(doctors);
-  } catch (err) {
-    res.status(500).json({ message: 'Error retrieving doctors', error: err.message });
+    res.status(200).json({ doctors });
+  } catch (error) {
+    console.error('Error retrieving doctors:', error);
+    res.status(500).json({ message: 'Error retrieving doctors', error: error.message });
   }
 };
 
-/**
- * POST /api/book-appointment
- * Book a new appointment.
- * Expected JSON body:
- * {
- *   "userId": "user_object_id",
- *   "doctorId": "doctor_object_id",
- *   "date": "YYYY-MM-DD",
- *   "time": "HH:MM AM/PM"
- * }
- */
-exports.bookAppointment = async (req, res) => {
+// 2. Retrieve doctors according to specialization
+const getDoctorsBySpecialization = async (req, res) => {
   try {
-    const { user_id, doctor, date, time } = req.body;
+    const { specialization } = req.params;
+    const doctors = await Doctor.find({ specialization });
+    res.status(200).json({ doctors });
+  } catch (error) {
+    console.error('Error retrieving doctors by specialization:', error);
+    res.status(500).json({ message: 'Error retrieving doctors by specialization', error: error.message });
+  }
+};
 
-    // Optional: Validate doctor availability here if needed.
+// 3. Return clinic timings
+const getClinicTimings = async (req, res) => {
+  try {
+    const { clinicId } = req.params;
+    const clinic = await Clinic.findById(clinicId);
+    if (!clinic) {
+      return res.status(404).json({ message: 'Clinic not found' });
+    }
+    res.status(200).json({ timings: clinic.timings });
+  } catch (error) {
+    console.error('Error retrieving clinic timings:', error);
+    res.status(500).json({ message: 'Error retrieving clinic timings', error: error.message });
+  }
+};
 
-    const newAppointment = new Appointment({
-      user_id: user_id,
-      doctor: doctor,
-      date,
-      time,
-      status: 'Booked'
+// 4. Return individual doctor timings
+const getDoctorTimings = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const doctor = await Doctor.findById(doctorId);
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+    res.status(200).json({ workingHours: doctor.workingHours });
+  } catch (error) {
+    console.error('Error retrieving doctor timings:', error);
+    res.status(500).json({ message: 'Error retrieving doctor timings', error: error.message });
+  }
+};
+
+// 5. Add new doctor
+const addNewDoctor = async (req, res) => {
+  try {
+    const {
+      name,
+      details,
+      experience,
+      specialization,
+      dailyPatientLimit,
+      workingHours,
+      workingDays,
+      consultationFee,
+      allottedSlots, // Optional: array of time slots e.g., ["10:00 AM", "10:30 AM"]
+      freeSlots      // Optional: available slots
+    } = req.body;
+    
+    // Create and save the new doctor instance
+    const doctor = new Doctor({
+      name,
+      details,
+      experience,
+      specialization,
+      dailyPatientLimit,
+      workingHours,
+      workingDays,
+      consultationFee,
+      allottedSlots: allottedSlots || [],
+      freeSlots: freeSlots || []
     });
-
-    await newAppointment.save();
-    res.status(201).json({ message: 'Appointment booked successfully', appointment: newAppointment });
-  } catch (err) {
-    res.status(500).json({ message: 'Error booking appointment', error: err.message });
+    await doctor.save();
+    res.status(201).json({ message: 'Doctor added successfully', doctor });
+  } catch (error) {
+    console.error('Error adding doctor:', error);
+    res.status(500).json({ message: 'Error adding doctor', error: error.message });
   }
 };
 
-/**
- * GET /api/appointment/:appointmentId
- * Retrieve details of a specific appointment.
- */
-exports.getAppointment = async (req, res) => {
-  try {
-    const appointment = await Appointment.findById(req.params.appointmentId)
-      .populate('doctor')
-      .populate('user');
-    if (!appointment) {
-      return res.status(404).json({ message: 'Appointment not found' });
-    }
-    res.json(appointment);
-  } catch (err) {
-    res.status(500).json({ message: 'Error retrieving appointment', error: err.message });
-  }
-};
+// 6. Book an appointment
 
-/**
- * GET /api/appointments?userId=...
- * Retrieve all appointments for a given user.
- */
-exports.getAppointmentsForUser = async (req, res) => {
-  try {
-    const { userId } = req.query;
-    if (!userId) {
-      return res.status(400).json({ message: 'UserId is required' });
-    }
-    const appointments = await Appointment.find({ user: userId }).populate('doctor');
-    res.json(appointments);
-  } catch (err) {
-    res.status(500).json({ message: 'Error retrieving appointments', error: err.message });
-  }
-};
 
-/**
- * PUT /api/appointment/:appointmentId
- * Update an existing appointment.
- * Expected JSON body (any of these fields can be updated):
- * {
- *   "date": "YYYY-MM-DD",
- *   "time": "HH:MM AM/PM",
- *   "status": "Updated"
- * }
- */
-exports.updateAppointment = async (req, res) => {
+const bookAppointment = async (req, res) => {
   try {
-    const { date, time, status } = req.body;
-    const appointment = await Appointment.findById(req.params.appointmentId);
-    if (!appointment) {
-      return res.status(404).json({ message: 'Appointment not found' });
-    }
-    if (date) appointment.date = date;
-    if (time) appointment.time = time;
-    if (status) appointment.status = status;
+    const { clinic, patient, patientName, doctor, doctorName, appointmentTime, charges } = req.body;
+    
+    const appointment = new Appointment({
+      clinic,
+      patient,
+      patientName,
+      doctor,
+      doctorName,
+      appointmentTime,
+      charges,
+      status: 'Scheduled'
+    });
+    
     await appointment.save();
-    res.json({ message: 'Appointment updated successfully', appointment });
-  } catch (err) {
-    res.status(500).json({ message: 'Error updating appointment', error: err.message });
+
+    // Update user's appointment history
+    await User.findByIdAndUpdate(patient, { $push: { previousAppointments: appointment._id } });
+
+    res.status(201).json({ message: 'Appointment booked successfully', appointment });
+  } catch (error) {
+    console.error('Error booking appointment:', error);
+    res.status(500).json({ message: 'Error booking appointment', error: error.message });
   }
 };
 
-exports.addDoctor = async (req, res) => {
+
+// 7. Retrieve appointment details
+const getAppointmentDetails = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const appointment = await Appointment.findById(appointmentId)
+      .populate('clinic', 'name address timings')
+      .populate('doctor', 'name specialization workingHours')
+      .populate('patient', 'name email phoneNumber');
+    
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+    res.status(200).json({ appointment });
+  } catch (error) {
+    console.error('Error retrieving appointment details:', error);
+    res.status(500).json({ message: 'Error retrieving appointment details', error: error.message });
+  }
+};
+
+// 8. Retrieve specific user appointments
+const getUserAppointments = async (req, res) => {
     try {
-      const { name, specialization, available_slots, fee } = req.body;
-  
-      // Create a new Doctor document
-      const newDoctor = new Doctor({
-        name,
-        specialization,
-        available_slots,
-        fee
-      });
-  
-      await newDoctor.save();
-      res.status(201).json({ message: 'Doctor added successfully', doctor: newDoctor });
+      const { userId } = req.params;
+      const appointments = await Appointment.find({ patient: userId })
+        .populate('clinic', 'name address timings')
+        .populate('doctor', 'name specialization workingHours')
+        .populate('patient', 'name email phoneNumber');
+      
+      res.status(200).json({ appointments });
     } catch (error) {
-      res.status(500).json({ message: 'Error adding doctor', error: error.message });
+      console.error('Error retrieving user appointments:', error);
+      res.status(500).json({ message: 'Error retrieving user appointments', error: error.message });
     }
   };
+  
+
+module.exports = {
+  getAllDoctors,
+  getDoctorsBySpecialization,
+  getClinicTimings,
+  getDoctorTimings,
+  addNewDoctor,
+  bookAppointment,
+  getAppointmentDetails,
+  getUserAppointments
+};
