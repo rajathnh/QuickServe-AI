@@ -50,44 +50,50 @@ const getDishDetails = async (req, res) => {
 };
 
 
-
 const placeOrder = async (req, res) => {
-  try {
-    const { user, items, type } = req.body;
-    let totalPrice = 0;
-    let totalDuration = 0;
-    
-    for (const item of items) {
-      const menuItem = await Menu.findById(item.menuItem);
-      if (!menuItem) {
-        return res.status(404).json({ message: `Menu item not found: ${item.menuItem}` });
+    try {
+      const { user, items, type } = req.body;
+      let totalPrice = 0;
+      let totalDuration = 0;
+      
+      for (const item of items) {
+        const menuItem = await Menu.findById(item.menuItem);
+        if (!menuItem) {
+          return res.status(404).json({ message: `Menu item not found: ${item.menuItem}` });
+        }
+        totalPrice += menuItem.price * item.quantity;
+        if (menuItem.preparationDuration) {
+          totalDuration += menuItem.preparationDuration * item.quantity;
+        }
       }
-      totalPrice += menuItem.price * item.quantity;
-      if (menuItem.preparationDuration) {
-        totalDuration += menuItem.preparationDuration * item.quantity;
-      }
+      
+      const order = new Order({
+        user,
+        items,
+        totalPrice,
+        totalDuration,
+        type,
+        status: 'Pending'
+      });
+      
+      await order.save();
+  
+      // Update user's order history
+      await User.findByIdAndUpdate(user, { $push: { orderHistory: order._id } });
+      
+      // Populate the menuItem field (only the "name" field) for each item
+      await order.populate('items.menuItem', 'name');
+      
+      // Convert the populated document to a plain object
+      const orderObj = order.toObject();
+      
+      res.status(201).json({ message: 'Order placed successfully', order: orderObj });
+    } catch (error) {
+      console.error('Error placing order:', error);
+      res.status(500).json({ message: 'Error placing order', error: error.message });
     }
-    
-    const order = new Order({
-      user,
-      items,
-      totalPrice,
-      totalDuration,
-      type,
-      status: 'Pending'
-    });
-    
-    await order.save();
-
-    // Update user's order history
-    await User.findByIdAndUpdate(user, { $push: { orderHistory: order._id } });
-    
-    res.status(201).json({ message: 'Order placed successfully', order });
-  } catch (error) {
-    console.error('Error placing order:', error);
-    res.status(500).json({ message: 'Error placing order', error: error.message });
-  }
-};
+  };
+  
 
 
 // 5. Get Estimated Order Preparation Time
@@ -202,7 +208,16 @@ const addMenuItem = async (req, res) => {
     }
   };
 
-  
+  const fetchAllMenuItems = async (req, res) => {
+    try {
+      const menuItems = await Menu.find(); // fetch all menu items
+      res.status(200).json({ menu: menuItems });
+    } catch (error) {
+      console.error("Error fetching menu items:", error);
+      res.status(500).json({ error: error.message });
+    }
+  };  
+
 module.exports = {
   checkMenu,
   findFoodByFoodLabelling,
@@ -211,5 +226,6 @@ module.exports = {
   getOrderEstimatedTime,
   addReview,
   getRestaurantDetails,
-  addMenuItem 
+  addMenuItem ,
+  fetchAllMenuItems,
 };

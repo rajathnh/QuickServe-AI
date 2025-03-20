@@ -18,7 +18,12 @@ router.post("/", async (req, res) => {
   - cancel_appointment: Return doctor name and appointment date.
   - place_order: Return a list of food items.
   - check_menu: No extra details needed.
+  - get_dish_details: Return the dish name.
   - cancel_order: Return order ID or relevant details.
+  - fetch_order_history: No extra details needed
+  - fetch_restaurant_details: Return restaurant name.
+  - get_doctor_timings: Return the doctor name with the Dr. prefix.
+  - fetch_appointment_history: No extra details needed.
   - unknown: If the user's intent is unclear or doesn't match any listed intent.
 
   Ensure the output is a JSON object with "intent" as a key.

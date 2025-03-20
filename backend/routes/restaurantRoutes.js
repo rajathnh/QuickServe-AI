@@ -23,7 +23,7 @@ router.post('/review', restaurantController.addReview);
 
 // Get complete restaurant details (including reviews and menu items)
 router.get('/details/:restaurantId', restaurantController.getRestaurantDetails);
-
+router.get("/menu", restaurantController.fetchAllMenuItems);
 // Add a new menu item
 router.post('/menu', restaurantController.addMenuItem);
 
