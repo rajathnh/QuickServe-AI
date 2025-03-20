@@ -59,8 +59,22 @@ async function mapBookingPayload(intentData, req) {
     console.log("Mapped doctor details:", { doctor, doctorName });
   
     // Combine date and time into a valid appointment time.
-    const appointmentTime = new Date(`${intentData.date} ${intentData.time}`).toISOString();
-    console.log("Computed appointment time:", appointmentTime);
+   // Normalize the date (remove 'st', 'nd', 'rd', 'th')
+const rawDate = intentData.date.trim().replace(/(\d+)(st|nd|rd|th)/, "$1");
+
+// Append current year if missing
+const currentYear = new Date().getFullYear();
+const fullDateString = `${rawDate} ${currentYear} ${intentData.time.trim()}`;
+
+console.log("Parsing date:", fullDateString);
+
+// Convert to a valid Date object
+const appointmentTime = new Date(fullDateString);
+if (isNaN(appointmentTime.getTime())) {
+  throw new Error("Invalid time format. Please check the date and time values.");
+}
+
+console.log("Computed appointment time:", appointmentTime.toISOString());
   
     // Set a default charge or use doctor's consultation fee if available
     const charges = doctorData.consultationFee || 150;
@@ -104,7 +118,7 @@ router.post("/", authenticateUser, async (req, res) => {
             bookingPayload
           );
           console.log("Clinic booking response:", bookRes.data);
-          rawResult = bookRes.data.message + ". Appointment ID: " + bookRes.data.appointment_id;
+          rawResult = bookRes.data.message + ". Appointment ID: " + bookRes.data.appointment._id;
         } catch (error) {
           console.error("Error during booking mapping or request:", error);
           rawResult = "Failed to book appointment: " + error.message;
