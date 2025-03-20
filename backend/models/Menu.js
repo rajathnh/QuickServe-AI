@@ -12,6 +12,7 @@ const MenuItemSchema = new mongoose.Schema({
   description: { type: String },
   price: { type: Number, required: true },
   servingSize: { type: String },
+  labels: [{ type: String, enum: ["vegetarian", "vegan", "gluten-free", "non-veg"] }],
   taste: [{ type: String, enum: ["Spicy", "Sour", "Sweet", "Salty", "Bitter"] }],
   restaurant: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant" },
 });

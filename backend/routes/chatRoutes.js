@@ -124,26 +124,252 @@ router.post("/", authenticateUser, async (req, res) => {
           rawResult = "Failed to book appointment: " + error.message;
         }
         break;
-      case "check_availability":
-        {
-          const availRes = await axios.post(
-            "http://localhost:5000/api/v1/clinic/availability",
-            intentData
-          );
-          console.log("Availability response:", availRes.data);
-          rawResult = "Available slots: " + availRes.data.availableSlots.join(", ");
-        }
-        break;
-      case "cancel_appointment":
-        {
-          const cancelRes = await axios.post(
-            "http://localhost:5000/api/v1/clinic/cancel",
-            intentData
-          );
-          console.log("Cancel appointment response:", cancelRes.data);
-          rawResult = cancelRes.data.message;
-        }
-        break;
+        case "check_availability": 
+            try {
+              console.log("Handling check_availability intent:", intentData);
+          
+              if (!intentData.doctor_name || !intentData.date) {
+                rawResult = "Please provide the doctor's name and the date to check availability.";
+                break;
+              }
+          
+              // Remove ordinal suffixes (st, nd, rd, th) from the date
+              let formattedDate = intentData.date.replace(/(\d+)(st|nd|rd|th)/, "$1");
+          
+              console.log("Formatted date after removing ordinal suffixes:", formattedDate);
+          
+              // Convert the formatted date into a proper Date object
+              let givenDate = new Date(`${formattedDate} 2025`);  // Assuming year 2025 for now
+              console.log("Parsed date:", givenDate);
+          
+              // Ensure the parsed date is valid
+              if (isNaN(givenDate)) {
+                rawResult = "The provided date is invalid. Please enter a valid date.";
+                break;
+              }
+          
+              // Get the day of the week (e.g., Monday, Tuesday)
+              const dayOfWeek = givenDate.toLocaleDateString("en-US", { weekday: "long" });
+          
+              // Search for the doctor by name
+              const doctor = await Doctor.findOne({ name: new RegExp(`^${intentData.doctor_name}$`, "i") });
+          
+              if (!doctor) {
+                rawResult = `Sorry, I couldn't find any doctor named ${intentData.doctor_name}.`;
+                break;
+              }
+          
+              console.log(`Doctor found: ${doctor.name}, ID: ${doctor._id}, Working Days: ${doctor.workingDays}`);
+          
+              // Check if the doctor works on that day
+              if (!doctor.workingDays.includes(dayOfWeek)) {
+                rawResult = `${doctor.name} does not work on ${dayOfWeek}. Please choose a different day.`;
+                break;
+              }
+          
+              // Check available slots
+              const availableSlots = doctor.freeSlots;
+          
+              if (!availableSlots || availableSlots.length === 0) {
+                rawResult = `${doctor.name} is fully booked on ${formattedDate}. Please choose another date.`;
+              } else {
+                rawResult = `${doctor.name} is available on ${formattedDate} during ${doctor.workingHours}. Available slots: ${availableSlots.join(", ")}.`;
+              }
+          
+            } catch (error) {
+              console.error("Error fetching doctor availability:", error);
+              rawResult = "I couldn't retrieve the doctor's availability right now. Please try again later.";
+            }
+            break;
+          
+            case "check_general_checkup_fee": {
+                try {
+                  console.log("Handling check_general_checkup_fee intent:", intentData);
+              
+                  // 1️⃣ Fetch all doctors with their consultation fees
+                  const doctors = await Doctor.find({}, "name specialization consultationFee");
+                  
+                  if (doctors.length === 0) {
+                    rawResult = "I'm sorry, but I couldn't find any doctor details at the moment.";
+                  } else {
+                    // 2️⃣ Format the doctor list
+                    const doctorList = doctors.map(doc => 
+                      `📌 ${doc.name} (${doc.specialization}) - $${doc.consultationFee}`
+                    ).join("\n");
+              
+                    // 3️⃣ Final response message
+                    rawResult = `The consultation fee depends on the doctor. Here are some available doctors and their fees:\n\n${doctorList}\n\nWould you like to book an appointment with a specific doctor?`;
+                  }
+              
+                  console.log("General check-up fees response:", rawResult);
+                } catch (error) {
+                  console.error("Error fetching doctor consultation fees:", error);
+                  rawResult = "I'm having trouble retrieving the consultation fee details right now. Please try again later.";
+                }
+              
+                // Refine and send response
+                rawResult = await refineResponse(rawResult);
+                res.json({ message: rawResult });
+              }
+              break;
+              case "recommend_food_by_taste": {
+                try {
+                    console.log("Handling recommend_food_by_taste intent:", intentData);
+            
+                    // Fix: Ensure taste_preference is correctly accessed
+                    let taste_preference = intentData.taste_preference || intentData["taste preference"];
+            
+                    if (!taste_preference) {
+                        rawResult = "Please specify a taste preference such as spicy, sweet, sour, or salty.";
+                        break;
+                    }
+            
+                    // Ensure taste_preference is an array
+                    if (typeof taste_preference === "string") {
+                        taste_preference = taste_preference.split("/").map(taste => taste.trim());
+                    }
+            
+                    console.log("Finding dishes for taste preference:", taste_preference);
+            
+                    // Perform case-insensitive matching for taste labels
+                    const regexTastes = taste_preference.map(taste => new RegExp(`^${taste}$`, "i"));
+            
+                    // Find dishes that match at least one of the requested taste labels
+                    const dishes = await Menu.find({ taste: { $in: regexTastes } }, "name price taste");
+            
+                    if (dishes.length === 0) {
+                        rawResult = `Sorry, we don't have any dishes that match your taste preferences: ${taste_preference.join(", ")}.`;
+                    } else {
+                        const dishList = dishes.map(dish => `${dish.name} ($${dish.price})`).join(", ");
+                        rawResult = `Here are some ${taste_preference.join(", ")} dishes you might like: ${dishList}`;
+                    }
+            
+                    console.log("Recommended dishes response:", rawResult);
+                } catch (error) {
+                    console.error("Error recommending food based on taste:", error);
+                    rawResult = "I'm having trouble finding dishes right now. Please try again later.";
+                }
+            
+                // Refine and send response
+                rawResult = await refineResponse(rawResult);
+                res.json({ message: rawResult });
+            }
+            break;
+            
+            case "order_estimated_time": {
+                try {
+                  console.log("Handling order_estimated_time intent:", intentData);
+              
+                  // Call the endpoint to get the latest order's estimated preparation time
+                  const orderTimeRes = await axios.get("http://localhost:5000/api/v1/restaurant/order/latest", {
+                    headers: { Cookie: req.headers.cookie } // Ensure authentication is passed
+                  });
+              
+                  console.log("Order estimated time response:", orderTimeRes.data);
+              
+                  if (orderTimeRes.data.estimatedTime) {
+                    rawResult = `Your latest order will take approximately ${orderTimeRes.data.estimatedTime} minutes to be ready.`;
+                  } else {
+                    rawResult = "I couldn't retrieve your order's estimated time right now. Please try again later.";
+                  }
+                } catch (error) {
+                  console.error("Error retrieving order estimated time:", error.message);
+                  rawResult = "I'm unable to find your order's estimated time at the moment. Have you placed an order recently?";
+                }
+              
+                // Refine and send response
+                rawResult = await refineResponse(rawResult);
+                res.json({ message: rawResult });
+              }
+              break;
+              
+            
+              case "filter_dishes": {
+                try {
+                    console.log("Handling filter_dishes intent:", intentData);
+            
+                    const { dietary_preference } = intentData;
+                    if (!dietary_preference || dietary_preference.length === 0) {
+                        rawResult = "Please specify whether you're looking for vegetarian, vegan, or gluten-free options.";
+                        break;
+                    }
+            
+                    // Sort the preferences to make order irrelevant
+                    const sortedLabels = [...dietary_preference].sort();
+                    console.log("Filtering dishes for sorted labels:", sortedLabels);
+            
+                    // Find dishes that contain ALL requested labels, regardless of order
+                    const dishes = await Menu.find({ labels: { $all: sortedLabels } }, "name price labels");
+            
+                    if (dishes.length === 0) {
+                        rawResult = `Sorry, we don't have any ${dietary_preference.join(", ")} dishes available right now.`;
+                    } else {
+                        const dishList = dishes.map(dish => `${dish.name} ($${dish.price})`).join(", ");
+                        rawResult = `Here are our ${dietary_preference.join(", ")} dishes: ${dishList}`;
+                    }
+            
+                    console.log("Filtered dishes response:", rawResult);
+                } catch (error) {
+                    console.error("Error filtering dishes:", error);
+                    rawResult = "I'm having trouble retrieving the menu right now. Please try again later.";
+                }
+            
+                // Refine and send response
+                rawResult = await refineResponse(rawResult);
+                res.json({ message: rawResult });
+            }
+            break;
+            
+              
+
+              case "check_doctors_available": {
+                try {
+                  console.log("Handling check_doctors_available intent:", intentData);
+              
+                  const { date } = intentData;
+                  if (!date) {
+                    rawResult = "Please provide a specific date to check doctor availability.";
+                    break;
+                  }
+              
+                  console.log("Checking availability for date:", date);
+              
+                  // Assuming all doctors work based on working days, find those who work on the given date's weekday
+                  const cleanedDate = date.replace(/(\d+)(st|nd|rd|th)/, "$1"); // Remove suffixes
+const parsedDate = new Date(cleanedDate + " 2025"); // Ensure valid format
+if (isNaN(parsedDate)) {
+  rawResult = "Invalid date format. Please provide a valid date.";
+  break;
+}
+const dayOfWeek = parsedDate.toLocaleDateString("en-US", { weekday: "long" });
+
+                  console.log(`Parsed date: ${date}, Day of week: ${dayOfWeek}`);
+              
+                  const doctors = await Doctor.find({ workingDays: dayOfWeek }, "name specialization workingHours");
+              
+                  if (doctors.length === 0) {
+                    rawResult = `No doctors are available on ${date}. Please try another day.`;
+                  } else {
+                    // Format doctor list
+                    const doctorList = doctors.map(doc =>
+                      `📌 ${doc.name} (${doc.specialization}) - ${doc.workingHours}`
+                    ).join("\n");
+              
+                    rawResult = `Here are the doctors available on ${date}:\n\n${doctorList}\n\nWould you like to book an appointment?`;
+                  }
+              
+                  console.log("Available doctors response:", rawResult);
+                } catch (error) {
+                  console.error("Error checking doctor availability:", error);
+                  rawResult = "I'm having trouble retrieving the doctor availability right now. Please try again later.";
+                }
+              
+                // Refine and send response
+                rawResult = await refineResponse(rawResult);
+                res.json({ message: rawResult });
+              }
+              break;
+              
         case "place_order":
   {
     try {
@@ -495,7 +721,7 @@ router.post("/", authenticateUser, async (req, res) => {
         }
         break;
       default:
-        rawResult = "I'm not sure what you meant. Could you please clarify?";
+        rawResult = message;
         break;
     }
 

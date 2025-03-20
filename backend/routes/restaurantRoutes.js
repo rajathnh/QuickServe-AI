@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const restaurantController = require('../controllers/restaurantController');
+const {authenticateUser,
+    authorizePermissions,} = require('../middleware/authMiddleware');
 // assuming you split addMenuItem into its own controller file
 
 // Check menu for a specific restaurant
@@ -14,9 +16,11 @@ router.get('/dish/:dishId', restaurantController.getDishDetails);
 
 // Place an order
 router.post('/order', restaurantController.placeOrder);
-
+router.get('/order/latest',authenticateUser,restaurantController.getLatestOrderEstimatedTime )
 // Get estimated time for an order
 router.get('/order/time/:orderId', restaurantController.getOrderEstimatedTime);
+
+
 
 // Add a review for a restaurant
 router.post('/review', restaurantController.addReview);

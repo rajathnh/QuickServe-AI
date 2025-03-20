@@ -6,8 +6,8 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   phoneNumber: { type: String, required: true, unique: true },
     address: { type: String },
-    foodLabelling: [{ type: String, enum: ["Veg", "Non-Veg", "Vegan", "Gluten-Free"] }],
-    choicesAndLiking: [{ type: String }],
+    foodLabelling: [{ type: String, enum: ["vegetarian", "non-veg", "vegan", "gluten-free"] }],
+    choicesAndLiking: [{ type: String, enum: ["Spicy", "Sour", "Sweet", "Salty", "Bitter"] }], 
     orderHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: "Order" }],
   presentIssue: { type: String },
   previousReports: [{ type: String }], // URLs or file paths

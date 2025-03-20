@@ -111,6 +111,27 @@ const getOrderEstimatedTime = async (req, res) => {
   }
 };
 
+const getLatestOrderEstimatedTime = async (req, res) => {
+    try {
+      const userId = req.user.id; // Get user ID from authentication middleware
+  
+      // Find the latest order placed by the user, sorted by creation time (most recent first)
+      const latestOrder = await Order.findOne({ user: userId })
+        .sort({ createdAt: -1 }) // Sort in descending order
+        .select("totalDuration createdAt");
+  
+      if (!latestOrder) {
+        return res.status(404).json({ message: "You haven't placed any orders yet." });
+      }
+  
+      res.status(200).json({ estimatedTime: latestOrder.totalDuration });
+    } catch (error) {
+      console.error("Error retrieving latest order estimated time:", error);
+      res.status(500).json({ message: "Error retrieving order estimated time", error: error.message });
+    }
+  };
+  
+
 // 6. Add Review and Rating for a Restaurant
 const addReview = async (req, res) => {
   try {
@@ -179,6 +200,7 @@ const addMenuItem = async (req, res) => {
         description,
         price,
         servingSize,
+        labels,
         taste,
         restaurant
       } = req.body;
@@ -195,6 +217,7 @@ const addMenuItem = async (req, res) => {
         description,
         price,
         servingSize,
+        labels,
         taste,
         restaurant
       });
@@ -228,4 +251,5 @@ module.exports = {
   getRestaurantDetails,
   addMenuItem ,
   fetchAllMenuItems,
+  getLatestOrderEstimatedTime,
 };
