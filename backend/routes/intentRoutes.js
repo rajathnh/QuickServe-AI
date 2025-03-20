@@ -24,6 +24,7 @@ router.post("/", async (req, res) => {
   - fetch_restaurant_details: Return restaurant name.
   - get_doctor_timings: Return the doctor name with the Dr. prefix.
   - fetch_appointment_history: No extra details needed.
+  - check_appointment_cost: Return Doctor name with the Dr. prefix.
   - unknown: If the user's intent is unclear or doesn't match any listed intent.
 
   Ensure the output is a JSON object with "intent" as a key.

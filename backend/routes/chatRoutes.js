@@ -355,6 +355,38 @@ router.post("/", authenticateUser, async (req, res) => {
   }
   break;
 
+  case "check_appointment_cost":
+  {
+    try {
+      console.log("Handling check_appointment_cost intent:", intentData);
+
+      // Ensure doctor_name is provided
+      if (!intentData.doctor_name) {
+        rawResult = "Please provide the doctor's name to check the consultation fee.";
+      } else {
+        console.log("Searching for doctor's fee by name:", intentData.doctor_name);
+
+        // Lookup doctor by name (case-insensitive)
+        const doctor = await Doctor.findOne({ name: new RegExp(`^${intentData.doctor_name}$`, "i") });
+        if (doctor) {
+          console.log("Found doctor:", doctor);
+          rawResult = `Dr. ${doctor.name} charges $${doctor.consultationFee} per appointment.`;
+        } else {
+          console.log("No doctor found with the name:", intentData.doctor_name);
+          rawResult = `Sorry, I couldn't find any doctor named ${intentData.doctor_name}.`;
+        }
+      }
+
+      // Refine the response to make it conversational
+      rawResult = await refineResponse(rawResult);
+      res.json({ message: rawResult });
+    } catch (error) {
+      console.error("Error fetching appointment cost:", error);
+      res.status(500).json({ error: "Failed to fetch appointment cost", details: error.message });
+    }
+  }
+  break;
+
       
 
         case "check_menu":
