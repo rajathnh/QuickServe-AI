@@ -32,7 +32,8 @@ router.post("/", async (req, res) => {
   - filter_dishes: Return dietary preference (vegetarian, gluten-free, vegan, etc.).
   - order_estimated_time: No extra details needed.
   - unknown: If the user's intent is unclear or doesn't match any listed intent.
-
+  
+  Try to extract as many details as possible. 
   Ensure the output is a JSON object with "intent" as a key.
   Message: "${prompt}"
   `;
