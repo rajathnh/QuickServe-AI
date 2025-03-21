@@ -5,16 +5,289 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="login.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    backgroundImage: {
+                        'navbar-gradient': 'linear-gradient(to right, #D6E1F3, #75CDED, #8A95BF, #2F666F)',
+                        'company-gradient': 'linear-gradient(to right, #E3D3C8, #C1CCC4, #BCC2A2, #B6AC94, #2D4B60)',
+                        'footer-gradient': 'linear-gradient(to right, #D6E1F3, #8A95BF, #2DB3E3, #3B7C87)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+                scroll-behavior: smooth;
+             }
+        /* Hide scrollbar for Chrome, Safari, and Opera */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+    
+        /* Hide scrollbar for IE, Edge, and Firefox */
+        .scrollbar-hide {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        /* Add scroll-margin-top to account for the navbar height */
+        .scroll-margin {
+            scroll-margin-top: 70px; /* Height of the navbar */
+        }
+        
+        #navbar {
+            transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+            box-shadow 0.3s ease;
+            box-shadow: none !important;
+        }
+
+        nav {
+            border-radius: 12px 12px 12px 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .backdrop-blur-md {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+    </style>
 </head>
-<body>
-    <div class="container">
-        <h2>Login</h2>
-        <form id="loginForm">
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
+<body class="bg-[#c6e8f5] min-h-screen font-sans">
+    <!-- Navbar Section -->
+<header class="fixed w-full z-50 transition-all duration-300 " id="navbar" style="top: 20px;">
+    <nav class="bg-gradient-to-r from-blue-500 to-purple-600 border-b border-white/20 backdrop-blur-md shadow-md transition-all duration-300 w-[90%] mx-auto rounded-b-xl overflow-hidden">
+        <div class="container mx-auto px-4 md:px-8">
+            <div class="flex justify-between items-center h-20 transition-all duration-300" id="nav-container">
+                <!-- Logo with Image -->
+                <div class="flex items-center space-x-3">
+                    <img src="image/logo.png" alt="QuickServe Logo" 
+                         class="h-10 w-10 rounded-lg shadow-md border-2 border-white/20">
+                    <span class="text-white text-xl font-bold hidden md:block">QuickServe</span>
+                </div>
+                
+                <!-- Desktop Navigation Links -->
+                <div class="hidden md:flex space-x-6 items-center">
+                    <a href="#" class="text-white/90 hover:text-white font-medium transition-all relative group">
+                        Home
+                        <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#testimonial" class="text-white/90 hover:text-white font-medium transition-all relative group">
+                        Testimonials
+                        <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#team" class="text-white/90 hover:text-white font-medium transition-all relative group">
+                        Team
+                        <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#faqs" class="text-white/90 hover:text-white font-medium transition-all relative group">
+                        FAQs
+                        <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
+                    </a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-white focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="md:hidden fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm" onclick="closeMobileMenu()">
+    <div class="absolute top-16 left-0 right-0 bg-white shadow-lg z-60" onclick="event.stopPropagation()">
+        <div class="flex flex-col space-y-3 p-4">
+            <a href="#" class="text-gray-800 hover:text-blue-600 font-medium p-3" onclick="closeMobileMenu()">Home</a>
+            <a href="#testimonial" class="text-gray-800 hover:text-blue-600 font-medium p-3" onclick="closeMobileMenu()">Testimonials</a>
+            <a href="#team" class="text-gray-800 hover:text-blue-600 font-medium p-3" onclick="closeMobileMenu()">Team</a>
+            <a href="#faqs" class="text-gray-800 hover:text-blue-600 font-medium p-3" onclick="closeMobileMenu()">FAQs</a>
+        </div>
     </div>
+</div>
+
+<script>
+    // Mobile Menu Functionality
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    function closeMobileMenu() {
+        mobileMenu.classList.add('hidden');
+    }
+
+    mobileMenuButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+            closeMobileMenu();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMobileMenu();
+    });
+
+    // Navbar Scroll Effect
+    let lastScroll = 0;
+    const navbar = document.getElementById('navbar');
+
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        const scrollDelta = currentScroll - lastScroll;
+        
+        if (scrollDelta > 0) { // Scrolling down
+            navbar.style.top = `${Math.min(20 + (currentScroll * 0.15), 30)}px`;
+        } else { // Scrolling up
+            navbar.style.top = `${Math.max(20 - (currentScroll * 0.1), 15)}px`;
+        }
+
+        navbar.classList.toggle('shadow-lg', currentScroll > 100);
+        lastScroll = currentScroll;
+    });
+</script>
+    <!-- Main Content -->
+    <main class="flex-1 mt-16 mb-8"> <!-- Adjusted margin for navbar -->
+        <div class="container max-w-md mx-auto p-6">
+            <div class="bg-white rounded-2xl shadow-2xl transform transition-all duration-300 hover:shadow-3xl p-8">
+                <!-- Login Header -->
+                <div class="text-center mb-8">
+                    <h2 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                        Welcome Back
+                    </h2>
+                    <p class="text-gray-600">Sign in to continue your culinary journey</p>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="space-y-6">
+                    <!-- Email Input -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Email Address</label>
+                        <input type="email" id="email" 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 placeholder-gray-400"
+                            placeholder="hello@example.com" required>
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" id="password" 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 placeholder-gray-400"
+                            placeholder="••••••••" required>
+                    </div>
+
+                    <!-- Additional Options -->
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded">
+                            <span class="text-gray-600">Remember me</span>
+                        </label>
+                        <a href="#" class="text-blue-600 hover:text-blue-800 transition">Forgot password?</a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" 
+                        class="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-[1.02] shadow-lg">
+                        Sign In
+                    </button>
+
+                    <!-- Registration Prompt -->
+                    <p class="text-center text-gray-600 mt-6">
+                        New here? 
+                        <a href="#" class="text-blue-600 hover:text-blue-800 font-semibold transition">Create account</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </main>
+    <!-- Footer Section -->
+<footer class="bg-footer-gradient text-black pt-12 pb-6">
+    <div class="container mx-auto px-4">
+        <!-- Footer Content -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <!-- Newsletter Section -->
+            <div class="space-y-4">
+                <h4 class="text-xl font-bold">Stay Informed</h4>
+                <p class="text-gray-700">Get updates about new features and special offers.</p>
+                <div class="flex max-w-md">
+                    <input type="email" placeholder="Enter your email" 
+                           class="px-4 py-2 w-full rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 transition">
+                        Subscribe
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Contact -->
+            <div class="space-y-4">
+                <h4 class="text-xl font-bold">Quick Contact</h4>
+                <ul class="space-y-2 text-gray-700">
+                    <li>📧 support@quickserve.com</li>
+                    <li>📞 +1 (555) 123-4567</li>
+                    <li>📍 123 Innovation Drive, Tech City</li>
+                </ul>
+            </div>
+
+            <!-- Social Media Section -->
+            <div class="space-y-4">
+                <h4 class="text-xl font-bold">Join Our Community</h4>
+                <div class="flex flex-col space-y-4">
+                    <p class="text-gray-700">Connect with us on social media:</p>
+                    <div class="flex space-x-4">
+                        <!-- Facebook -->
+                        <a href="#" class="p-2 rounded-full bg-blue-100 hover:bg-blue-200 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+                            </svg>
+                        </a>
+                        <!-- Instagram -->
+                        <a href="#" class="p-2 rounded-full bg-pink-100 hover:bg-pink-200 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                                <circle cx="12" cy="12" r="5"/>
+                            </svg>
+                        </a>
+                        <!-- LinkedIn -->
+                        <a href="#" class="p-2 rounded-full bg-blue-100 hover:bg-blue-200 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/>
+                            </svg>
+                        </a>
+                        <!-- YouTube -->
+                        <a href="#" class="p-2 rounded-full bg-red-100 hover:bg-red-200 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="pt-8 border-t border-gray-200">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+                <p class="text-gray-600">© 2024 QuickServe. All rights reserved.</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-600 hover:text-black transition">Privacy Policy</a>
+                    <a href="#" class="text-gray-600 hover:text-black transition">Terms of Service</a>
+                    <a href="#" class="text-gray-600 hover:text-black transition">Cookie Settings</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
     <script src="login.js"></script>
 </body>
 </html>

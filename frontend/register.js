@@ -33,3 +33,6 @@ document.getElementById("registerForm").addEventListener("submit", async functio
         alert("Registration failed.");
     }
 });
+function redirectToLogin() {
+    window.location.href = "login.html";
+}
