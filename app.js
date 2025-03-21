@@ -7,7 +7,9 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const port = process.env.PORT || 5000;
-
+app.use(cors());
+app.use(express.json());
+app.use(express.static("frontend"));
 const connectDB = require("./backend/db/connect");
 app.use(cookieParser(process.env.JWT_SECRET));
 
@@ -19,9 +21,8 @@ const mistralRouter = require("./backend/routes/mistralRoutes");
 const intentRoutes = require("./backend/routes/intentRoutes");
 const refineResponseRoutes = require("./backend/routes/refineResponseRoutes");
 const chatRoutes = require("./backend/routes/chatRoutes");
-
-app.use(cors());
-app.use(express.json());
+const chatRouter = require("./backend/routes/chat");
+app.use("/api/v1/chat/history", chatRouter);
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/restaurant", restaurantRouter);

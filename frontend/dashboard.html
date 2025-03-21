@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <div class="container">
+        <h2>User Dashboard</h2>
+
+        <!-- User Profile Box -->
+        <div class="box" id="userProfile">
+            <h3>User Details</h3>
+            <p><strong>Name:</strong> <span id="userName"></span></p>
+            <p><strong>Email:</strong> <span id="userEmail"></span></p>
+            <p><strong>Phone:</strong> <span id="userPhone"></span></p>
+        </div>
+
+        <!-- Chatbox -->
+        <div class="box" id="chatbox">
+            <h3>Chat with AI</h3>
+            <div id="chatMessages"></div>
+            <input type="text" id="chatInput" placeholder="Type a message..." />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+        
+        <!-- Order History -->
+        <div class="box" id="orderHistory">
+            <h3>Order History</h3>
+            <ul id="ordersList"></ul>
+        </div>
+
+        <!-- Appointment History -->
+        <div class="box" id="appointmentHistory">
+            <h3>Appointment History</h3>
+            <ul id="appointmentsList"></ul>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

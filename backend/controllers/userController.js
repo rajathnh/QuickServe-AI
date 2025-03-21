@@ -108,18 +108,20 @@ const getOrderHistoryForUser = async (userId) => {
   };
   const getAppointmentHistoryForUser = async (req, res) => {
     try {
-        const userId = req.user.id;  // Get the logged-in user ID
+        const userId = req.user.id;
+        console.log(`🔹 Fetching appointments for user: ${userId}`);
 
-        // Retrieve all appointments where the user is the patient
         const appointments = await Appointment.find({ patient: userId })
-            .populate('doctor', 'name specialization')  // Populate doctor details
-            .populate('clinic', 'name');  // Populate clinic details
+            .populate('doctor', 'name specialization')
+            .populate('clinic', 'name');
+
+        console.log(`🔹 Retrieved appointments:`, appointments); // ✅ Log fetched data
 
         if (!appointments || appointments.length === 0) {
+            console.log("❌ No appointment history found.");
             return res.status(404).json({ message: "No appointment history found." });
         }
 
-        // Process the appointments to ensure doctor names are included
         const formattedAppointments = appointments.map(appt => ({
             appointmentId: appt._id,
             doctorName: appt.doctor ? appt.doctor.name : "Unknown Doctor",
@@ -130,14 +132,14 @@ const getOrderHistoryForUser = async (userId) => {
             charges: appt.charges,
         }));
 
+        console.log("✅ Returning formatted appointments:", formattedAppointments);
         res.status(200).json({ appointments: formattedAppointments });
     } catch (error) {
-        console.error("Error fetching appointment history:", error);
+        console.error("❌ Error fetching appointment history:", error);
         res.status(500).json({ message: "Error fetching appointment history", error: error.message });
     }
 };
 
-  
 module.exports = {
   getUserProfile,
   updateUserProfile,

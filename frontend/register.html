@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <link rel="stylesheet" href="register.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Register</h2>
+        <form id="registerForm">
+            <input type="text" id="name" placeholder="Name" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="text" id="phoneNumber" placeholder="Phone Number" required>
+            <input type="text" id="address" placeholder="Address">
+            <input type="password" id="password" placeholder="Password" required>
+
+            <h4>Food Preferences:</h4>
+            <label><input type="checkbox" value="vegetarian" class="foodLabelling"> Vegetarian</label>
+            <label><input type="checkbox" value="non-veg" class="foodLabelling"> Non-Veg</label>
+            <label><input type="checkbox" value="vegan" class="foodLabelling"> Vegan</label>
+            <label><input type="checkbox" value="gluten-free" class="foodLabelling"> Gluten-Free</label>
+
+            <h4>Flavor Preferences:</h4>
+            <label><input type="checkbox" value="Spicy" class="choicesAndLiking"> Spicy</label>
+            <label><input type="checkbox" value="Sour" class="choicesAndLiking"> Sour</label>
+            <label><input type="checkbox" value="Sweet" class="choicesAndLiking"> Sweet</label>
+            <label><input type="checkbox" value="Salty" class="choicesAndLiking"> Salty</label>
+            <label><input type="checkbox" value="Bitter" class="choicesAndLiking"> Bitter</label>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <script src="register.js"></script>
+</body>
+</html>
