@@ -81,15 +81,22 @@ async function fetchUserProfile() {
         });
         const data = await response.json();
 
-        if (response.ok) {
-            // Update all userName elements (there may be multiple)
-            const userNameElements = document.querySelectorAll("#userName");
-            userNameElements.forEach(element => {
-                element.textContent = data.user.name;
-            });
+        if (response.ok && data.user) {
+            // Update welcome header userName (assumes at least one element with id "userName")
+            const userNameElement = document.getElementById("userName");
+            if (userNameElement) {
+                userNameElement.textContent = data.user.name;
+            }
             
-            document.getElementById("userEmail").textContent = data.user.email;
-            document.getElementById("userPhone").textContent = data.user.phoneNumber;
+            // Update additional details if elements exist
+            const userEmailElement = document.getElementById("userEmail");
+            if (userEmailElement) {
+                userEmailElement.textContent = data.user.email;
+            }
+            const userPhoneElement = document.getElementById("userPhone");
+            if (userPhoneElement) {
+                userPhoneElement.textContent = data.user.phoneNumber;
+            }
         } else {
             console.warn("Failed to fetch user profile:", data.message);
             throw new Error(data.message);
@@ -325,13 +332,19 @@ async function sendMessage() {
 function loadSimulatedData() {
     console.log("Loading simulated data as fallback");
     
-    // Set user profile
-    const userNameElements = document.querySelectorAll("#userName");
-    userNameElements.forEach(element => {
-        element.textContent = 'John Doe';
-    });
-    document.getElementById('userEmail').textContent = 'john@example.com';
-    document.getElementById('userPhone').textContent = '+1 234 567 890';
+    // Set user profile if element exists
+    const userNameElement = document.getElementById("userName");
+    if (userNameElement) {
+        userNameElement.textContent = 'John Doe';
+    }
+    const userEmailElement = document.getElementById("userEmail");
+    if (userEmailElement) {
+        userEmailElement.textContent = 'john@example.com';
+    }
+    const userPhoneElement = document.getElementById("userPhone");
+    if (userPhoneElement) {
+        userPhoneElement.textContent = '+1 234 567 890';
+    }
     
     // Load orders
     const orders = [
@@ -340,15 +353,17 @@ function loadSimulatedData() {
     ];
     
     const ordersList = document.getElementById('ordersList');
-    ordersList.innerHTML = orders.map(order => `
-        <li class="flex justify-between items-center bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition">
-            <div>
-                <span class="font-medium">Order #${order.id}</span>
-                <span class="text-sm text-gray-500">${order.date}</span>
-            </div>
-            <span class="text-blue-600 font-medium">${order.total}</span>
-        </li>
-    `).join('');
+    if (ordersList) {
+        ordersList.innerHTML = orders.map(order => `
+            <li class="flex justify-between items-center bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition">
+                <div>
+                    <span class="font-medium">Order #${order.id}</span>
+                    <span class="text-sm text-gray-500">${order.date}</span>
+                </div>
+                <span class="text-blue-600 font-medium">${order.total}</span>
+            </li>
+        `).join('');
+    }
     
     // Load appointments
     const appointments = [
@@ -357,13 +372,15 @@ function loadSimulatedData() {
     ];
     
     const appointmentsList = document.getElementById('appointmentsList');
-    appointmentsList.innerHTML = appointments.map(appointment => `
-        <li class="flex justify-between items-center bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition">
-            <div>
-                <span class="font-medium">${appointment.doctor}</span>
-                <span class="text-sm text-gray-500">${appointment.date} at ${appointment.time}</span>
-            </div>
-            <span class="text-purple-600 font-medium">Upcoming</span>
-        </li>
-    `).join('');
+    if (appointmentsList) {
+        appointmentsList.innerHTML = appointments.map(appointment => `
+            <li class="flex justify-between items-center bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition">
+                <div>
+                    <span class="font-medium">${appointment.doctor}</span>
+                    <span class="text-sm text-gray-500">${appointment.date} at ${appointment.time}</span>
+                </div>
+                <span class="text-purple-600 font-medium">Upcoming</span>
+            </li>
+        `).join('');
+    }
 }

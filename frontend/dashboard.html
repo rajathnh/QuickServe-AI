@@ -1,282 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="dashboard.css">
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    backgroundImage: {
-                        'navbar-gradient': 'linear-gradient(to right, #D6E1F3, #75CDED, #8A95BF, #2F666F)',
-                        'company-gradient': 'linear-gradient(to right, #E3D3C8, #C1CCC4, #BCC2A2, #B6AC94, #2D4B60)',
-                        'footer-gradient': 'linear-gradient(to right, #D6E1F3, #8A95BF, #2DB3E3, #3B7C87)',
-                    }
-                }
-            }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          backgroundImage: {
+            'navbar-gradient': 'linear-gradient(to right, #D6E1F3, #75CDED, #8A95BF, #2F666F)',
+            'company-gradient': 'linear-gradient(to right, #E3D3C8, #C1CCC4, #BCC2A2, #B6AC94, #2D4B60)',
+            'footer-gradient': 'linear-gradient(to right, #D6E1F3, #8A95BF, #2DB3E3, #3B7C87)',
+          }
         }
-    </script>
+      }
+    }
+  </script>
 </head>
 <body class="bg-[#c6e8f5] min-h-screen font-sans">
-    <!-- Navbar Section -->
-    <header class="fixed w-full z-50 transition-all duration-300" id="navbar" style="top: 20px;">
-        <nav class="bg-gradient-to-r from-blue-500 to-purple-600 border-b border-white/20 backdrop-blur-md shadow-md transition-all duration-300 w-[90%] mx-auto rounded-b-xl overflow-hidden">
-            <div class="container mx-auto px-4 md:px-8">
-                <div class="flex justify-between items-center h-20 transition-all duration-300" id="nav-container">
-                    <!-- Logo with Image -->
-                    <div class="flex items-center space-x-3">
-                        <img src="image/logo.png" alt="QuickServe Logo" 
-                             class="h-10 w-10 rounded-lg shadow-md border-2 border-white/20">
-                        <span class="text-white text-xl font-bold hidden md:block">QuickServe</span>
-                    </div>
-                    
-                    <!-- Desktop Navigation Links -->
-                    <div class="hidden md:flex space-x-6 items-center">
-                        <a href="index.html" class="text-white/90 hover:text-white font-medium transition-all relative group">
-                            Home
-                            <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
-                        </a>
-                        <a href="index.html#team" class="text-white/90 hover:text-white font-medium transition-all relative group">
-                            Team
-                            <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
-                        </a>
-                        <a href="index.html#faqs" class="text-white/90 hover:text-white font-medium transition-all relative group">
-                            FAQs
-                            <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
-                        </a>
-                        <button onclick="scrollToChatbox()" class="ml-4 bg-white/10 text-white px-6 py-2 rounded-full font-semibold hover:bg-white/20 transition backdrop-blur-sm">
-                            Get Started
-                        </button>
-                    </div>
-                    
-                    <!-- Mobile Menu Button -->
-                    <div class="md:hidden">
-                        <button id="mobile-menu-button" class="text-white focus:outline-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="md:hidden fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm" onclick="closeMobileMenu()">
-        <div class="absolute top-16 left-0 right-0 bg-white shadow-lg z-60" onclick="event.stopPropagation()">
-            <div class="flex flex-col space-y-3 p-4">
-                <a href="#" class="text-gray-800 hover:text-blue-600 font-medium p-3" onclick="closeMobileMenu()">Home</a>
-                <a href="#team" class="text-gray-800 hover:text-blue-600 font-medium p-3" onclick="closeMobileMenu()">Team</a>
-                <a href="#faqs" class="text-gray-800 hover:text-blue-600 font-medium p-3" onclick="closeMobileMenu()">FAQs</a>
-                <button onclick="scrollToChatbox()" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition mt-2">
-                    Get Started
-                </button>
-            </div>
+  <!-- Navbar Section -->
+  <header class="fixed w-full z-50 transition-all duration-300" id="navbar" style="top: 20px;">
+    <nav class="bg-gradient-to-r from-blue-500 to-purple-600 border-b border-white/20 backdrop-blur-md shadow-md transition-all duration-300 w-[90%] mx-auto rounded-b-xl overflow-hidden">
+      <div class="container mx-auto px-4 md:px-8">
+        <div class="flex justify-between items-center h-20 transition-all duration-300" id="nav-container">
+          <!-- Logo with Image -->
+          <div class="flex items-center space-x-3">
+            <img src="image/logo.png" alt="QuickServe Logo" 
+                 class="h-10 w-10 rounded-lg shadow-md border-2 border-white/20" />
+            <span class="text-white text-xl font-bold hidden md:block">QuickServe</span>
+          </div>
+          
+          <!-- Desktop Navigation Links -->
+          <div class="hidden md:flex space-x-6 items-center">
+            <a href="index.html" class="text-white/90 hover:text-white font-medium transition-all relative group">
+              Home
+              <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
+            </a>
+            <a href="index.html#team" class="text-white/90 hover:text-white font-medium transition-all relative group">
+              Team
+              <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
+            </a>
+            <a href="index.html#faqs" class="text-white/90 hover:text-white font-medium transition-all relative group">
+              FAQs
+              <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
+            </a>
+            <button onclick="scrollToChatbox()" class="ml-4 bg-white/10 text-white px-6 py-2 rounded-full font-semibold hover:bg-white/20 transition backdrop-blur-sm">
+              Get Started
+            </button>
+          </div>
+          
+          <!-- Mobile Menu Button -->
+          <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
         </div>
-    </div>
-    
+      </div>
+    </nav>
+  </header>
 
-    <!-- Main Content -->
-<div class="mt-[100px] mx-auto mb-[30px] container pt-24 px-4 md:px-8">
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="md:hidden fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm" onclick="closeMobileMenu()">
+    <div class="absolute top-16 left-0 right-0 bg-white shadow-lg z-60" onclick="event.stopPropagation()">
+      <div class="flex flex-col space-y-3 p-4">
+        <a href="#" class="text-gray-800 hover:text-blue-600 font-medium p-3" onclick="closeMobileMenu()">Home</a>
+        <a href="#team" class="text-gray-800 hover:text-blue-600 font-medium p-3" onclick="closeMobileMenu()">Team</a>
+        <a href="#faqs" class="text-gray-800 hover:text-blue-600 font-medium p-3" onclick="closeMobileMenu()">FAQs</a>
+        <button onclick="scrollToChatbox()" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition mt-2">
+          Get Started
+        </button>
+      </div>
+    </div>
+  </div>
+    
+  <!-- Main Content -->
+  <div class="mt-[100px] mx-auto mb-[30px] container pt-24 px-4 md:px-8">
     <!-- Dashboard Header -->
     <div class="mb-8 text-center">
-        <h2 class="text-5xl font-bold text-gray-800 mb-2">Welcome Back, <span id="userName" class="text-blue-600"></span></h2>
-        <p class="text-gray-600">Your personal dashboard for managing orders and appointments</p>
+      <h2 class="text-5xl font-bold text-gray-800 mb-2">Welcome Back, <span id="userName" class="text-blue-600"></span></h2>
+      <p class="text-gray-600">Your personal dashboard for managing orders and appointments</p>
     </div>
 
-    <!-- Grid Layout -->
-    <div class="grid md:grid-cols-3 gap-8">
-        <!-- Left Column - Main Content -->
-        <div class="md:col-span-2 space-y-8">
-            <!-- Chat Interface -->
-            <div class="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-all">
-                <div class="flex items-center mb-8">
-                    <div class="bg-purple-600 p-3 rounded-xl mr-4 shadow-md">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-bold text-gray-800">AI Assistant</h3>
-                        <p class="text-sm text-gray-500">Always ready to help</p>
-                    </div>
-                </div>
-                
-                <div id="chatMessages" class="h-[400px] overflow-y-auto mb-8 space-y-6 pr-3">
-                    <!-- AI Initial Message -->
-                    <div class="flex">
-                        <div class="bg-white border border-blue-100 rounded-2xl p-5 max-w-[90%] shadow-sm">
-                            <p class="text-gray-700 text-lg">Hello! I'm your AI assistant. How can I help you today?</p>
-                            <span class="text-xs text-gray-400 mt-2 block">Just now</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex gap-4 items-center">
-                    <input type="text" id="chatInput" 
-                        class="flex-1 h-14 rounded-xl border-2 border-blue-100 px-6 py-4 text-lg
-                               focus:outline-none focus:border-blue-300 focus:ring-2 focus:ring-blue-100
-                               transition-all placeholder-gray-400"
-                        placeholder="Type your message here...">
-                        <button onclick="sendMessage()" class="bg-blue-600 text-white px-5 py-3 rounded-xl hover:bg-blue-700 transition flex items-center justify-center w-20">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                            </svg>
-                        </button>
-                </div>
+    <!-- Grid Layout for Main Content -->
+    <div class="grid md:grid-cols-1 gap-8">
+      <!-- Chat Interface -->
+      <div class="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-all">
+        <div class="flex items-center mb-8">
+          <div class="bg-purple-600 p-3 rounded-xl mr-4 shadow-md">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-800">AI Assistant</h3>
+            <p class="text-sm text-gray-500">Always ready to help</p>
+          </div>
+        </div>
+        
+        <div id="chatMessages" class="h-[400px] overflow-y-auto mb-8 space-y-6 pr-3">
+          <!-- AI Initial Message -->
+          <div class="flex">
+            <div class="bg-white border border-blue-100 rounded-2xl p-5 max-w-[90%] shadow-sm">
+              <p class="text-gray-700 text-lg">Hello! I'm your AI assistant. How can I help you today?</p>
+              <span class="text-xs text-gray-400 mt-2 block">Just now</span>
             </div>
-
-            <!-- History Section -->
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Order History -->
-                <div class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-all">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-green-100 p-3 rounded-lg mr-4">
-                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-2xl font-bold text-gray-800">Order History</h3>
-                    </div>
-                    <ul id="ordersList" class="space-y-4">
-                        <!-- Orders will be loaded dynamically -->
-                    </ul>
-                </div>
-
-                <!-- Appointment History -->
-                <div class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-all">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-orange-100 p-3 rounded-lg mr-4">
-                            <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-2xl font-bold text-gray-800">Appointment History</h3>
-                    </div>
-                    <ul id="appointmentsList" class="space-y-4">
-                        <!-- Appointments will be loaded dynamically -->
-                    </ul>
-                </div>
-            </div>
+          </div>
         </div>
 
-        <!-- Right Column - User Profile -->
-        <div class="md:col-span-1">
-            <!-- User Profile Card -->
-            <div class="bg-gradient-to-b from-blue-600 to-indigo-600 rounded-2xl shadow-2xl p-8 hover:shadow-3xl transition-all sticky top-[90px] z-4">
-                <div class="text-center mb-6">
-                    <div class="inline-block relative mb-4">
-                        <img src="https://via.placeholder.com/150" class="w-32 h-32 rounded-2xl border-4 border-blue-200/50 shadow-lg" alt="Profile">
-                        <div class="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md">
-                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="text-2xl font-bold text-white mb-1" id="profileUserName">John Doe</h3>
-                    <span class="text-blue-200 text-sm">Premium Member</span>
-                </div>
-                
-                <div class="space-y-4 border-t border-blue-500/30 pt-6">
-                    <div class="flex items-center text-blue-100">
-                        <svg class="w-6 h-6 mr-3 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                        </svg>
-                        <span id="userEmail" class="truncate">john.doe@example.com</span>
-                    </div>
-                    <div class="flex items-center text-blue-100">
-                        <svg class="w-6 h-6 mr-3 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                        </svg>
-                        <span id="userPhone">+1 234 567 890</span>
-                    </div>
-                </div>
-            </div>
+        <div class="flex gap-4 items-center">
+          <input type="text" id="chatInput" 
+            class="flex-1 h-14 rounded-xl border-2 border-blue-100 px-6 py-4 text-lg
+                   focus:outline-none focus:border-blue-300 focus:ring-2 focus:ring-blue-100
+                   transition-all placeholder-gray-400"
+            placeholder="Type your message here...">
+          <button onclick="sendMessage()" class="bg-blue-600 text-white px-5 py-3 rounded-xl hover:bg-blue-700 transition flex items-center justify-center w-20">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+          </button>
         </div>
+      </div>
+
+      <!-- History Section -->
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Order History -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-all">
+          <div class="flex items-center mb-6">
+            <div class="bg-green-100 p-3 rounded-lg mr-4">
+              <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800">Order History</h3>
+          </div>
+          <ul id="ordersList" class="space-y-4">
+            <!-- Orders will be loaded dynamically -->
+          </ul>
+        </div>
+
+        <!-- Appointment History -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-all">
+          <div class="flex items-center mb-6">
+            <div class="bg-orange-100 p-3 rounded-lg mr-4">
+              <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800">Appointment History</h3>
+          </div>
+          <ul id="appointmentsList" class="space-y-4">
+            <!-- Appointments will be loaded dynamically -->
+          </ul>
+        </div>
+      </div>
     </div>
-</div>
-    <!-- Footer Section -->
-<footer class="bg-footer-gradient text-black pt-12 pb-6">
+  </div>
+
+  <!-- Footer Section -->
+  <footer class="bg-footer-gradient text-black pt-12 pb-6">
     <div class="container mx-auto px-4">
-        <!-- Footer Content -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <!-- Newsletter Section -->
-            <div class="space-y-4">
-                <h4 class="text-xl font-bold">Stay Informed</h4>
-                <p class="text-gray-700">Get updates about new features and special offers.</p>
-                <div class="flex max-w-md">
-                    <input type="email" placeholder="Enter your email" 
-                           class="px-4 py-2 w-full rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button class="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 transition">
-                        Subscribe
-                    </button>
-                </div>
-            </div>
-
-            <!-- Quick Contact -->
-            <div class="space-y-4">
-                <h4 class="text-xl font-bold">Quick Contact</h4>
-                <ul class="space-y-2 text-gray-700">
-                    <li>📧 support@quickserve.com</li>
-                    <li>📞 +1 (555) 123-4567</li>
-                    <li>📍 123 Innovation Drive, Tech City</li>
-                </ul>
-            </div>
-
-            <!-- Social Media Section -->
-            <div class="space-y-4">
-                <h4 class="text-xl font-bold">Join Our Community</h4>
-                <div class="flex flex-col space-y-4">
-                    <p class="text-gray-700">Connect with us on social media:</p>
-                    <div class="flex space-x-4">
-                        <!-- Facebook -->
-                        <a href="#" class="p-2 rounded-full bg-blue-100 hover:bg-blue-200 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
-                            </svg>
-                        </a>
-                        <!-- Instagram -->
-                        <a href="#" class="p-2 rounded-full bg-pink-100 hover:bg-pink-200 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                                <circle cx="12" cy="12" r="5"/>
-                            </svg>
-                        </a>
-                        <!-- LinkedIn -->
-                        <a href="#" class="p-2 rounded-full bg-blue-100 hover:bg-blue-200 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/>
-                            </svg>
-                        </a>
-                        <!-- YouTube -->
-                        <a href="#" class="p-2 rounded-full bg-red-100 hover:bg-red-200 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
+      <!-- Footer Content -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <!-- Newsletter Section -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-bold">Stay Informed</h4>
+          <p class="text-gray-700">Get updates about new features and special offers.</p>
+          <div class="flex max-w-md">
+            <input type="email" placeholder="Enter your email" 
+                   class="px-4 py-2 w-full rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-r-lg hover:bg-blue-700 transition">
+              Subscribe
+            </button>
+          </div>
         </div>
 
-        <!-- Footer Bottom -->
-        <div class="pt-8 border-t border-gray-200">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
-                <p class="text-gray-600">© 2024 QuickServe. All rights reserved.</p>
-                <div class="flex space-x-4">
-                    <a href="#" class="text-gray-600 hover:text-black transition">Privacy Policy</a>
-                    <a href="#" class="text-gray-600 hover:text-black transition">Terms of Service</a>
-                    <a href="#" class="text-gray-600 hover:text-black transition">Cookie Settings</a>
-                </div>
-            </div>
+        <!-- Quick Contact -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-bold">Quick Contact</h4>
+          <ul class="space-y-2 text-gray-700">
+            <li>📧 support@quickserve.com</li>
+            <li>📞 +1 (555) 123-4567</li>
+            <li>📍 123 Innovation Drive, Tech City</li>
+          </ul>
         </div>
+
+        <!-- Social Media Section -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-bold">Join Our Community</h4>
+          <div class="flex flex-col space-y-4">
+            <p class="text-gray-700">Connect with us on social media:</p>
+            <div class="flex space-x-4">
+              <!-- Facebook -->
+              <a href="#" class="p-2 rounded-full bg-blue-100 hover:bg-blue-200 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+                </svg>
+              </a>
+              <!-- Instagram -->
+              <a href="#" class="p-2 rounded-full bg-pink-100 hover:bg-pink-200 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                  <circle cx="12" cy="12" r="5"/>
+                </svg>
+              </a>
+              <!-- LinkedIn -->
+              <a href="#" class="p-2 rounded-full bg-blue-100 hover:bg-blue-200 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/>
+                </svg>
+              </a>
+              <!-- YouTube -->
+              <a href="#" class="p-2 rounded-full bg-red-100 hover:bg-red-200 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="pt-8 border-t border-gray-200">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+          <p class="text-gray-600">© 2024 QuickServe. All rights reserved.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-600 hover:text-black transition">Privacy Policy</a>
+            <a href="#" class="text-gray-600 hover:text-black transition">Terms of Service</a>
+            <a href="#" class="text-gray-600 hover:text-black transition">Cookie Settings</a>
+          </div>
+        </div>
+      </div>
     </div>
-</footer>
-    <script src="dashboard.js"></script>
+  </footer>
+  <script src="dashboard.js"></script>
 </body>
 </html>
