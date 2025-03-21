@@ -309,17 +309,26 @@ router.post("/", authenticateUser, async (req, res) => {
                 try {
                     console.log("Handling filter_dishes intent:", intentData);
             
-                    const { dietary_preference } = intentData;
-                    if (!dietary_preference || dietary_preference.length === 0) {
+                    let { dietary_preference } = intentData;
+            
+                    // Ensure dietary_preference is an array and properly split by '/' or ','
+                    if (typeof dietary_preference === "string") {
+                        dietary_preference = dietary_preference
+                            .split(/[/,]/) // Split by both '/' and ','
+                            .map(pref => pref.trim()) // Trim spaces
+                            .filter(pref => pref.length > 0); // Remove empty values
+                    }
+            
+                    if (!Array.isArray(dietary_preference) || dietary_preference.length === 0) {
                         rawResult = "Please specify whether you're looking for vegetarian, vegan, or gluten-free options.";
                         break;
                     }
             
                     // Sort the preferences to make order irrelevant
-                    const sortedLabels = [...dietary_preference].sort();
+                    const sortedLabels = dietary_preference.sort();
                     console.log("Filtering dishes for sorted labels:", sortedLabels);
             
-                    // Find dishes that contain ALL requested labels, regardless of order
+                    // Find dishes that contain ALL requested labels
                     const dishes = await Menu.find({ labels: { $all: sortedLabels } }, "name price labels");
             
                     if (dishes.length === 0) {
@@ -339,8 +348,7 @@ router.post("/", authenticateUser, async (req, res) => {
                 rawResult = await refineResponse(rawResult);
                 res.json({ message: rawResult });
             }
-            break;
-            
+            break;           
               
 
               case "check_doctors_available": {
