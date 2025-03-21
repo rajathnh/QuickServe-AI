@@ -8,6 +8,10 @@ npm start
 
 Test the Application Using Sample Prompts
 
+Use the following test credentials to log in:
+Email: rajathnh@gmail.com
+Password: Rajathnh
+
 Sample Test Prompts
 Copy and paste any of the following prompts in the chat to test different functionalities:
 
