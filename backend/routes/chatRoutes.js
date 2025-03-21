@@ -216,32 +216,33 @@ router.post("/", authenticateUser, async (req, res) => {
                 try {
                     console.log("Handling recommend_food_by_taste intent:", intentData);
             
-                    // Fix: Ensure taste_preference is correctly accessed
+                    // Extracting taste preference properly
                     let taste_preference = intentData.taste_preference || intentData["taste preference"];
-            
                     if (!taste_preference) {
-                        rawResult = "Please specify a taste preference such as spicy, sweet, sour, or salty.";
+                        rawResult = "Please specify a taste preference such as Spicy, Sweet, Sour, or Salty.";
                         break;
                     }
             
-                    // Ensure taste_preference is an array
+                    // Normalize taste_preference to an array
                     if (typeof taste_preference === "string") {
-                        taste_preference = taste_preference.split("/").map(taste => taste.trim());
+                        taste_preference = taste_preference.split(/[/,]| and /i).map(taste => taste.trim());
                     }
             
                     console.log("Finding dishes for taste preference:", taste_preference);
             
-                    // Perform case-insensitive matching for taste labels
-                    const regexTastes = taste_preference.map(taste => new RegExp(`^${taste}$`, "i"));
+                    // Convert taste labels to capitalized format for accurate matching
+                    const formattedTastes = taste_preference.map(taste => 
+                        taste.charAt(0).toUpperCase() + taste.slice(1).toLowerCase()
+                    );
             
                     // Find dishes that match at least one of the requested taste labels
-                    const dishes = await Menu.find({ taste: { $in: regexTastes } }, "name price taste");
+                    const dishes = await Menu.find({ taste: { $in: formattedTastes } }, "name price taste");
             
                     if (dishes.length === 0) {
-                        rawResult = `Sorry, we don't have any dishes that match your taste preferences: ${taste_preference.join(", ")}.`;
+                        rawResult = `Sorry, we don't have any dishes that match your taste preferences: ${formattedTastes.join(", ")}.`;
                     } else {
                         const dishList = dishes.map(dish => `${dish.name} ($${dish.price})`).join(", ");
-                        rawResult = `Here are some ${taste_preference.join(", ")} dishes you might like: ${dishList}`;
+                        rawResult = `Here are some ${formattedTastes.join(", ")} dishes you might like: ${dishList}`;
                     }
             
                     console.log("Recommended dishes response:", rawResult);
@@ -255,6 +256,7 @@ router.post("/", authenticateUser, async (req, res) => {
                 res.json({ message: rawResult });
             }
             break;
+            
             case "recommend_meal_combo": {
                 try {
                   console.log("Handling recommend_meal_combo intent for user:", req.user.id);
