@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getUserProfile,  updateUserProfile,fetchOrderHistory,getAppointmentHistoryForUser } = require('../controllers/userController');
+const { getUserProfile,  updateUserProfile,fetchOrderHistory,getAppointmentHistoryForUser ,recommendMealCombo} = require('../controllers/userController');
 const {authenticateUser,
     authorizePermissions,} = require('../middleware/authMiddleware'); // Ensure you have this middleware
 
@@ -11,4 +11,5 @@ router.get('/me', authenticateUser, getUserProfile);
 router.patch('/me', authenticateUser,  updateUserProfile);
 router.get('/orders', authenticateUser,  fetchOrderHistory);
 router.get('/appointments', authenticateUser, getAppointmentHistoryForUser);
+router.get('/recommend-meal',authenticateUser,recommendMealCombo)
 module.exports = router;

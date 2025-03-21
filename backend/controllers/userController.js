@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const Order = require('../models/Order');
 const Appointment = require('../models/Appointment');
+const Menu = require("../models/Menu");
+
 
 // 1. Get User Profile (with order history and appointment details)
 const getUserProfile = async (req, res) => {
@@ -140,6 +142,48 @@ const getOrderHistoryForUser = async (userId) => {
     }
 };
 
+
+
+const recommendMealCombo = async (req, res) => {
+    try {
+      const userId = req.user.id; // Get the logged-in user
+      console.log("Fetching meal recommendations for user:", userId);
+  
+      // Fetch user preferences
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      console.log("User preferences:", user.foodLabelling, user.choicesAndLiking);
+  
+      // Find matching food items based on user preferences
+      const matchingDishes = await Menu.find({
+        labels: { $in: user.foodLabelling }, // Match dietary preferences (veg, non-veg, etc.)
+        taste: { $in: user.choicesAndLiking }, // Match taste preferences (spicy, sweet, etc.)
+      });
+  
+      if (matchingDishes.length === 0) {
+        return res.json({ message: "Sorry, we couldn't find any meal combos matching your preferences." });
+      }
+  
+      console.log("Matching dishes found:", matchingDishes.length);
+  
+      // Format the matched meal combos
+      const mealCombos = matchingDishes.map(dish => `🍽️ ${dish.name} ($${dish.price})`).join("\n");
+  
+      const responseMessage = `Here are a few meal combos based on your preferences:\n\n${mealCombos}\n\nWould you like to place an order?`;
+  
+      console.log("Final meal recommendation:", responseMessage);
+      res.json({ message: responseMessage });
+  
+    } catch (error) {
+      console.error("Error recommending meal combo:", error);
+      res.status(500).json({ message: "Error recommending meal combo", error: error.message });
+    }
+  };
+
+
 module.exports = {
   getUserProfile,
   updateUserProfile,
@@ -147,4 +191,5 @@ module.exports = {
   getOrderHistoryForUser,
   getAppointmentHistoryForUser,
   fetchAppointmentHistory,
+  recommendMealCombo,
 };

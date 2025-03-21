@@ -255,7 +255,28 @@ router.post("/", authenticateUser, async (req, res) => {
                 res.json({ message: rawResult });
             }
             break;
-            
+            case "recommend_meal_combo": {
+                try {
+                  console.log("Handling recommend_meal_combo intent for user:", req.user.id);
+              
+                  // Call the controller function directly (since it uses req.user.id)
+                  const mealRes = await axios.get("http://localhost:5000/api/v1/user/recommend-meal", {
+                    headers: { Cookie: req.headers.cookie } // Ensures authentication is passed
+                  });
+              
+                  console.log("Meal recommendation response:", mealRes.data);
+                  rawResult = mealRes.data.message;
+                } catch (error) {
+                  console.error("Error recommending meal combo:", error.message);
+                  rawResult = "I'm having trouble finding a meal recommendation for you right now. Please try again later.";
+                }
+              
+                // Refine the response before sending
+                rawResult = await refineResponse(rawResult);
+                res.json({ message: rawResult });
+              }
+              break;
+              
             case "order_estimated_time": {
                 try {
                   console.log("Handling order_estimated_time intent:", intentData);

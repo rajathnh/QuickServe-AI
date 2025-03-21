@@ -14,6 +14,7 @@ router.post("/", async (req, res) => {
   Analyze the following user message and return the intent and relevant details in JSON format.
   The possible intents are:
   - book_appointment: Return doctor name, date, and time.
+  - recommend_meal_combo: no extra details needed.
   - check_doctors_available: Return date.
   - check_availability: Return doctor name and date.
   - cancel_appointment: Return doctor name and appointment date.
