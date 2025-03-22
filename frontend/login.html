@@ -72,9 +72,13 @@
                 
                 <!-- Desktop Navigation Links -->
                 <div class="hidden md:flex space-x-6 items-center">
-                    <a href="http://localhost:5000" class="text-white/90 hover:text-white font-medium transition-all relative group">
-                        Home
-                        <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
+                    <a href="javascript:void(0);" 
+   onclick="window.location.href = window.location.hostname === 'localhost' ? 'http://localhost:5000/register.html' : 'https://quickserve-ai-1.onrender.com/register.html'" 
+   class="text-white/90 hover:text-white font-medium transition-all relative group">
+   Home
+   <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
+</a>
+
                     </a>
                     <a href="#testimonial" class="text-white/90 hover:text-white font-medium transition-all relative group">
                         Testimonials
@@ -205,8 +209,13 @@
                     <!-- Registration Prompt -->
                     <p class="text-center text-gray-600 mt-6">
                         New here? 
-                        <a href="http://localhost:5000/register.html" class="text-blue-600 hover:text-blue-800 font-semibold transition">Create account</a>
+                        <a href="javascript:void(0);" 
+                           onclick="window.location.href = window.location.hostname === 'localhost' ? 'http://localhost:5000/register.html' : 'https://quickserve-ai-1.onrender.com/register.html'" 
+                           class="text-blue-600 hover:text-blue-800 font-semibold transition">
+                           Create account
+                        </a>
                     </p>
+                    
                 </form>
             </div>
         </div>

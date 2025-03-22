@@ -5,6 +5,7 @@ Extract the Zip File (Includes .env, node_modules, and all required dependencies
 
 Run the Server
 npm start
+and you can open it in localhost:5000
 
 Test the Application Using Sample Prompts
 

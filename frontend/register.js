@@ -14,7 +14,9 @@ document.getElementById("registerForm").addEventListener("submit", async functio
     const data = { name, email, phoneNumber, address, password, foodLabelling, choicesAndLiking };
 
     try {
-        const response = await fetch("http://localhost:5000/api/v1/auth/register", {
+        // Use the same getApiBaseUrl function for consistency
+        const baseUrl = getApiBaseUrl();
+        const response = await fetch(`${baseUrl}/api/v1/auth/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
@@ -33,6 +35,19 @@ document.getElementById("registerForm").addEventListener("submit", async functio
         alert("Registration failed.");
     }
 });
+
 function redirectToLogin() {
     window.location.href = "login.html";
+}
+
+// Make sure this function is accessible in this script
+// If it's defined in another file, you may need to add it here
+function getApiBaseUrl() {
+    // Check if we're in production environment (deployed on render.com)
+    if (window.location.hostname.includes('quickserve-ai-1.onrender.com') || 
+        window.location.hostname.includes('onrender.com')) {
+        return 'https://quickserve-ai-1.onrender.com';
+    }
+    // Fallback to localhost for development
+    return 'http://localhost:5000';
 }

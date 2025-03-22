@@ -19,6 +19,12 @@
       }
     }
   </script>
+  <script>
+    // Determine base URL based on current environment
+    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+      ? 'http://localhost:5000' 
+      : 'https://quickserve-ai-1.onrender.com';
+  </script>
   <style>
     html {
       scroll-behavior: smooth;
@@ -80,7 +86,7 @@
               FAQs
               <span class="absolute bottom-0 left-0 w-0 h-[2px] bg-white transition-all group-hover:w-full"></span>
             </a>
-            <button onclick="window.location.href='http://localhost:5000/register.html'" class="ml-4 bg-white/10 text-white px-6 py-2 rounded-full font-semibold hover:bg-white/20 transition backdrop-blur-sm">
+            <button onclick="window.location.href = baseUrl + '/register.html'" class="ml-4 bg-white/10 text-white px-6 py-2 rounded-full font-semibold hover:bg-white/20 transition backdrop-blur-sm">
               Get Started
             </button>
           </div>
@@ -105,7 +111,7 @@
         <a href="#testimonial" class="text-gray-800 hover:text-blue-600 font-medium p-3" onclick="closeMobileMenu()">Testimonials</a>
         <a href="#team" class="text-gray-800 hover:text-blue-600 font-medium p-3" onclick="closeMobileMenu()">Team</a>
         <a href="#faqs" class="text-gray-800 hover:text-blue-600 font-medium p-3" onclick="closeMobileMenu()">FAQs</a>
-        <button class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition mt-2">
+        <button onclick="window.location.href = baseUrl + '/register.html'" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition mt-2">
           Get Started
         </button>
       </div>
@@ -125,11 +131,11 @@
       </p>
       <div class="flex flex-col sm:flex-row justify-center gap-4">
         <!-- Register Button -->
-        <button onclick="window.location.href='http://localhost:5000/register.html'" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition">
+        <button onclick="window.location.href = baseUrl + '/register.html'" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition">
           Get Started
         </button>
         <!-- Login Button -->
-        <button onclick="window.location.href='http://localhost:5000/login.html'" class="bg-transparent hover:bg-gray-100 text-blue-600 font-bold py-3 px-6 rounded-lg border border-blue-600 transition">
+        <button onclick="window.location.href = baseUrl + '/login.html'" class="bg-transparent hover:bg-gray-100 text-blue-600 font-bold py-3 px-6 rounded-lg border border-blue-600 transition">
           Log In
         </button>
       </div>
@@ -213,11 +219,11 @@
       </p>
       <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
         <!-- Register Button -->
-        <button onclick="window.location.href='http://localhost:5000/register.html'" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition">
+        <button onclick="window.location.href = baseUrl + '/register.html'" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition">
           Sign Up
         </button>
         <!-- Login Button -->
-        <button onclick="window.location.href='http://localhost:5000/login.html'" class="bg-transparent hover:bg-white/20 text-white font-bold py-3 px-6 rounded-lg border border-white transition">
+        <button onclick="window.location.href = baseUrl + '/login.html'" class="bg-transparent hover:bg-white/20 text-white font-bold py-3 px-6 rounded-lg border border-white transition">
           Log In
         </button>
       </div>

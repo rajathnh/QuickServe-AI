@@ -3,11 +3,15 @@ document.getElementById("loginForm").addEventListener("submit", async function (
 
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
-
     const data = { email, password };
 
+    // Dynamically select API base URL
+    const API_BASE_URL = window.location.hostname === "localhost" 
+        ? "http://localhost:5000" 
+        : "https://quickserve-ai-1.onrender.com";
+
     try {
-        const response = await fetch("http://localhost:5000/api/v1/auth/login", {
+        const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -20,10 +24,10 @@ document.getElementById("loginForm").addEventListener("submit", async function (
             alert("Login Successful!");
             window.location.href = "/dashboard.html"; // Redirect after login
         } else {
-            alert(result.message);
+            alert(result.message || "Invalid credentials");
         }
     } catch (error) {
         console.error("Error:", error);
-        alert("Login failed.");
+        alert("Login failed. Please try again later.");
     }
 });

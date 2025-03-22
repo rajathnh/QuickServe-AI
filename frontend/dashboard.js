@@ -72,11 +72,23 @@ function scrollToChatbox() {
     document.getElementById("chatMessages").scrollIntoView({ behavior: "smooth" });
 }
 
+// Function to get the appropriate API base URL based on environment
+function getApiBaseUrl() {
+    // Check if we're in production environment (deployed on render.com)
+    if (window.location.hostname.includes('quickserve-ai-1.onrender.com') || 
+        window.location.hostname.includes('onrender.com')) {
+        return 'https://quickserve-ai-1.onrender.com';
+    }
+    // Fallback to localhost for development
+    return 'http://localhost:5000';
+}
+
 // ===== API DATA FETCHING =====
 
 async function fetchUserProfile() {
     try {
-        const response = await fetch("http://localhost:5000/api/v1/user/me", {
+        const baseUrl = getApiBaseUrl();
+        const response = await fetch(`${baseUrl}/api/v1/user/me`, {
             credentials: "include",
         });
         const data = await response.json();
@@ -109,7 +121,8 @@ async function fetchUserProfile() {
 
 async function fetchOrderHistory() {
     try {
-        const response = await fetch("http://localhost:5000/api/v1/user/orders", {
+        const baseUrl = getApiBaseUrl();
+        const response = await fetch(`${baseUrl}/api/v1/user/orders`, {
             credentials: "include",
         });
         const data = await response.json();
@@ -167,7 +180,8 @@ async function fetchOrderHistory() {
 
 async function fetchAppointmentHistory() {
     try {
-        const response = await fetch("http://localhost:5000/api/v1/user/appointments", {
+        const baseUrl = getApiBaseUrl();
+        const response = await fetch(`${baseUrl}/api/v1/user/appointments`, {
             credentials: "include",
         });
 
@@ -226,7 +240,8 @@ async function fetchAppointmentHistory() {
 
 async function loadChatHistory() {
     try {
-        const response = await fetch("http://localhost:5000/api/v1/chat/history", {
+        const baseUrl = getApiBaseUrl();
+        const response = await fetch(`${baseUrl}/api/v1/chat/history`, {
             credentials: "include",
         });
 
@@ -301,8 +316,9 @@ async function sendMessage() {
     input.value = "";
 
     try {
+        const baseUrl = getApiBaseUrl();
         // Send message to chatbot API
-        const response = await fetch("http://localhost:5000/api/v1/chat", {
+        const response = await fetch(`${baseUrl}/api/v1/chat`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -315,7 +331,7 @@ async function sendMessage() {
         addBotMessage(result.message);
 
         // Store chat history in database
-        await fetch("http://localhost:5000/api/v1/chat/history", {
+        await fetch(`${baseUrl}/api/v1/chat/history`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
